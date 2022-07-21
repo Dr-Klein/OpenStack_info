@@ -40,8 +40,7 @@ for (( i=1; i <= ${LIST_IDS}; i++ ))
 	TEMP_USER_ID=$(openstack server show $TEMP_INSTANCES_ID -c user_id -f value)
 	TEMP_USER_INFO=$(openstack user show $TEMP_USER_ID -c name -f value)
 	
-	echo "$TEMP_INSTANCES_NAME, $TEMP_INSTANCES_ID, $TEMP_INSTANCES_STATUS, \
-	 $TEMP_USER_ID, $TEMP_USER_INFO" >> ./1_1/instances_table.csv
+	echo "$TEMP_INSTANCES_NAME, $TEMP_INSTANCES_ID, $TEMP_INSTANCES_STATUS, $TEMP_USER_ID, $TEMP_USER_INFO" >> ./1_1/instances_table.csv
 	
 	done
 	
@@ -132,8 +131,7 @@ for (( i=1; i <= ${LIST_DISKS}; i++ ))
 	TEMP_USER_ID=$(openstack volume show $TEMP_VOLUME_ID -c user_id -f value)
 	TEMP_USER_INFO=$(openstack user show $TEMP_USER_ID -c name -f value)
 	
-	echo "$TEMP_VOLUME_NAME, $TEMP_VOLUME_ID, $TEMP_VOLUME_STATUS, \
-	 $TEMP_VOLUME_SIZE, $TEMP_USER_ID, $TEMP_USER_INFO" >> ./1_4/volumes_table.csv
+	echo "$TEMP_VOLUME_NAME, $TEMP_VOLUME_ID, $TEMP_VOLUME_STATUS, $TEMP_VOLUME_SIZE, $TEMP_USER_ID, $TEMP_USER_INFO" >> ./1_4/volumes_table.csv
 		
 	done
 echo -e "Step 1.4 is done, see file:\nvolumes_table.csv"
