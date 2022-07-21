@@ -27,7 +27,7 @@ openstack server list --all --sort-column Status | grep -E 'ERROR|SHUTOFF' > ins
 LIST_IDS=$(cat instances_info.log | awk '{print $2}' | wc -l)
 echo "All instances $LIST_IDS"
 echo "Get ID user, create instances..."
-echo "Instance, ID Instance, Status, ID user create vm, info user create vm" \
+echo "Instance, ID-Instance, Status, ID-user-create-vm, info-user-create-vm" \
  >> ./1_1/instances_table.csv
 
 
@@ -40,7 +40,7 @@ for (( i=1; i <= ${LIST_IDS}; i++ ))
 	TEMP_USER_ID=$(openstack server show $TEMP_INSTANCES_ID -c user_id -f value)
 	TEMP_USER_INFO=$(openstack user show $TEMP_USER_ID -c name -f value)
 	
-	echo "$TEMP_INSTANCES_NAME, $TEMP_INSTANCES_I, $TEMP_INSTANCES_STATUS, \
+	echo "$TEMP_INSTANCES_NAME, $TEMP_INSTANCES_ID, $TEMP_INSTANCES_STATUS, \
 	 $TEMP_USER_ID, $TEMP_USER_INFO" >> ./1_1/instances_table.csv
 	
 	done
@@ -65,10 +65,10 @@ for (( i=1; i <= ${LIST_IDS}; i++ ))
 	TEMP_EXIST=$(cat ports_info.log | head -n ${i} | tail -n 1 | wc -w)
 	if [ "$TEMP_EXIST" -lt "12" ]; then continue; fi
 	TEMP_PORT_ID=$(cat ports_info.log | awk '{print $2}' | head -n ${i} | tail -n 1)
-	TEMP_PORT_IP=$(cat ports_info.log | awk '{print $8}' | head -n ${i} | tail -n 1)
+	TEMP_PORT_IP=$(cat ports_info.log | awk '{print $8}' | head -n ${i} | tail -n 1 | sed -r 's/ip_address=//' | sed -r "s/'//g" | sed -r "s/,//")
 	TEMP_PORT_STATUS=$(cat ports_info.log | awk '{print $11}' | head -n ${i} | tail -n 1)
 	TEMP_PORT_SUBNET=$(cat ports_info.log | awk '{print $9}' | head -n ${i} | tail -n 1 | sed -r 's/subnet_id=//' | sed -r "s/'//" | sed -r "s/'//")
-	TEMP_INSTANCES=$(openstack port show $TEMP_PORT_ID -c tags -f value | sed 's/[][]//g' | sed -r "s/'migration', '//" | sed -r "s/'//")
+	TEMP_INSTANCES=$(openstack port show $TEMP_PORT_ID -c tags -f value | sed 's/[][]//g' | sed -r "s/'//g" | sed -r "s/,//g" | sed -r "s/migration//")
 	
 	echo "$TEMP_PORT_ID, $TEMP_PORT_STATUS, $TEMP_PORT_IP, $TEMP_PORT_SUBNET, $TEMP_INSTANCES" >> ./1_2/ports_table.csv
 		  
@@ -120,7 +120,7 @@ echo "Get information for not actual volumes..."
 openstack volume list --all | grep 'available' | grep -vE 'okd-|image-|iso|Attached' > not_actuale_volumes_info.log
 LIST_DISKS=$(cat not_actuale_volumes_info.log | awk '{print $2}' | wc -l)
 echo "DISK_NAME, VOLUME_ID, STATUS, SIZE, USER_ID, USER_NAME" \
- >> ./1_4/result_table.csv
+ >> ./1_4/volumes_table.csv
 
 for (( i=1; i <= ${LIST_DISKS}; i++ ))
 	do
